@@ -1,0 +1,224 @@
+---
+title: Supplementary Material - Geography environment
+author: P Solano et all
+date: "`r Sys.time()`"
+output:
+  html_document:
+    code_folding: hide
+    fig_caption: yes
+    force_captions: yes
+    highlight: pygments
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 6
+    toc_float: no
+    df_print: paged
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+  word_document:
+    toc: yes
+    toc_depth: '3'
+csl: mee.csl
+subtitle: 
+bibliography: bib.bib
+---
+
+# Cavernelho Clonal distribution
+
+
+<!-- Cavernelho             |  São Luís -->
+<!-- :-------------------------:|:-------------------------: -->
+<!-- ![](Plot/Cavernelho_Clones.png){width=90%}  |  ![](Plot/Qta_Sluis3.png){width=130%} -->
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="100%", fig.show='hold', fig.align='defauld'}
+#knitr::include_graphics(c("Plot/Cavernelho_Clones.png","Plot/Qta_Sluis3.png")) 
+knitr::include_graphics(c("Plot/Cavernelho_Clones.png")) 
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE}
+require(foreign)
+require(dplyr)
+require(ggplot2)
+require(tidyr)
+library(RColorBrewer)
+
+
+# spatial analysis
+
+### Dados Clima - Completos #####@
+
+setwd("G:/My Drive/Studying - Research/Wine_Utad/Text-Code")
+
+library(raster)
+library(ggplot2)
+
+
+f1 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Cavernelho/aspect_CV.tif"
+f2 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Cavernelho/DEM_CV.tif"
+f3 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Cavernelho/slope_CV.tif"
+r1 <- raster(f1)
+r2 <- raster(f2)
+r3 <- raster(f3)
+
+library(sf)
+shape <- st_read("G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Cavernelho/CLONES_CV.shp",quiet=TRUE)
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE}
+options(rgl.useNULL = TRUE) # Suppress the separate window.
+library(rgl)
+```
+
+## Cavernelho: Solar orientation
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="150%"}
+
+library(rasterVis)
+
+Aragonez <- as.data.frame(shape)
+
+Aragonez <- Aragonez%>%
+  rename(Aspect = aspect_CV, Slope=slope_CV, DEM=DEM_CV )
+
+CV <- st_as_sf(Aragonez, coords=c("Longitude","Latitude"),crs=4326)
+
+library(mapview)
+library(leaflet)
+mapviewOptions(basemaps="Esri.WorldImagery")
+setView(mapview(CV, cex=2.5,zcol="Aspect",lwd=0,col.regions=brewer.pal(9, "YlOrRd") )@map,zoom=18,lat=41.29383,lng=-7.72055)
+
+
+
+```
+
+## Cavernelho: Elevation (m)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="150%"}
+
+
+setView(mapview(CV, cex=2.5,zcol="DEM",lwd=0,col.regions=brewer.pal(9, "YlOrRd") )@map,zoom=18,lat=41.29383,lng=-7.72055)
+
+```
+
+## Cavernelho: Slope (%)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="150%"}
+
+
+setView(mapview(CV, cex=2.5,zcol="Slope",lwd=0,col.regions=brewer.pal(9, "YlOrRd") )@map,zoom=18,lat=41.29383,lng=-7.72055)
+
+
+```
+
+# São Luis Clones distribution
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="100%", fig.show='hold', fig.align='defauld'}
+#knitr::include_graphics(c("Plot/Cavernelho_Clones.png","Plot/Qta_Sluis3.png")) 
+knitr::include_graphics(c("Plot/Qta_Sluis3.png")) 
+
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE}
+require(foreign)
+require(dplyr)
+require(ggplot2)
+require(tidyr)
+
+# spatial analysis
+
+### Dados Clima - Completos #####@
+
+setwd("G:/My Drive/Studying - Research/Wine_Utad/Text-Code")
+
+library(raster)
+library(ggplot2)
+
+
+f1.2 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/aspect1_2.tif"
+f3.6 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/aspect3_6.tif"
+
+fDem1.2 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/DEM1_2.tif"
+fDem3.4.5.6 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/DEM3_4_5_6.tif"
+
+fslope1.2 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/slope1_2.tif"
+fslope3.6 <- "G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/slope3_6.tif"
+
+r1.2 <- raster(f1.2)
+r3.6 <- raster(f3.6)
+
+rd1.2 <- raster(fDem1.2)
+rd3.4.5.6 <- raster(fDem3.4.5.6)
+
+rs1.2 <- raster(fslope1.2)
+rs3.6 <- raster(fslope3.6)
+
+library(sf)
+
+shape_1.2 <- st_read("G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/CLONES_1_2.shp",quiet=TRUE)
+
+shape_3 <- st_read("G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/CLONES_3.shp",quiet=TRUE)
+
+shape_4.5.6 <- st_read("G:/My Drive/Studying - Research/Wine_Utad/Text-Code/Sluis/CLONES_4_5_6.shp",quiet=TRUE)
+
+```
+
+## São Luis: Solar orientation
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="150%"}
+
+
+require(dplyr)
+
+Aragonez_1.2 <- as.data.frame(shape_1.2)
+Aragonez_3 <- as.data.frame(shape_3)
+Aragonez_4.5.6 <- as.data.frame(shape_4.5.6)
+
+SL <- rbind(
+Aragonez_1.2%>%
+  rename(CLONES=CLONE_ID, Elevation=SLOPE,Aspect=ASPECT,Slope=Elevation),
+Aragonez_3,
+Aragonez_4.5.6)
+
+SL <- st_as_sf(SL, coords=c("Longitude","Latitude"),crs=4326)
+
+
+library(mapview)
+mapviewOptions(basemaps="Esri.WorldImagery")
+
+setView(mapview(SL, cex=2.5,zcol="Aspect",lwd=0,col.regions=brewer.pal(9, "YlOrRd") )@map,zoom=18,lat=41.15468,lng=-7.62829)
+
+
+
+```
+
+## São Luis: Elevation (m)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="150%"}
+
+setView(mapview(SL, cex=2.5,zcol="Elevation",lwd=0,col.regions=brewer.pal(9, "YlOrRd") )@map,zoom=18,lat=41.15468,lng=-7.62829)
+
+
+```
+
+## São Luis: Slope (%)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache.comments=FALSE, out.width="150%"}
+
+setView(mapview(SL, cex=2.5,zcol="Slope",lwd=0,col.regions=brewer.pal(9, "YlOrRd") )@map,zoom=18,lat=41.15468,lng=-7.62829)
+
+
+```
+
+
